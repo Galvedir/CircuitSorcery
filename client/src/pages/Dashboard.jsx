@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { defaultApps } from '../components/SideMenu';
+import { defaultApps, adminApps } from '../components/SideMenu';
 
-export default function Dashboard({ apps = defaultApps }) {
+export default function Dashboard({ user }) {
+  const apps = user?.accountType === 'admin' ? adminApps : defaultApps;
   return (
     <main style={{ padding: '32px', maxWidth: 700, margin: '0 auto' }}>
       <div style={{

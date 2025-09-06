@@ -1,6 +1,12 @@
 // Add the export keyword to defaultApps
 export const defaultApps = [
-  
+  { name: 'My Circuits', icon: '🧩', to: '/circuits' },
+  { name: 'Marketplace', icon: '🛒', to: '/marketplace' }
+];
+
+export const adminApps = [
+  ...defaultApps,
+  { name: 'Admin', icon: '🛠️', to: '/admin' }
 ];
 
 import React from 'react';

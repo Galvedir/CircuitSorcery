@@ -1,11 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import RequireAdmin from './components/RequireAdmin';
 import TopBar from './components/TopBar';
 import SideMenu from './components/SideMenu';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import UserManagement from './pages/admin/UserManagement';
 
 // Reusable authentication wrapper
 function RequireAuth({ user, children }) {
@@ -56,6 +58,16 @@ function App() {
                   <RequireAuth user={user}>
                     <div>Welcome to Circuit Sorcery!</div>
                   </RequireAuth>
+                }
+              />
+
+              {/* Admin Routes */}
+              <Route
+                path="/admin"
+                element={
+                  <RequireAdmin user={user}>
+                    <UserManagement />
+                  </RequireAdmin>
                 }
               />
             </Routes>

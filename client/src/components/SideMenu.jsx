@@ -1,12 +1,11 @@
-// Add the export keyword to defaultApps
 export const defaultApps = [
-  { name: 'My Circuits', icon: '🧩', to: '/circuits' },
-  { name: 'Marketplace', icon: '🛒', to: '/marketplace' }
+  { name: 'Cycle Counter', icon: '🌀', to: '/cyclecounter' },
+  { name: 'Text Alerts', icon: '🗨️', to: '/textalerts' },
 ];
 
 export const adminApps = [
   ...defaultApps,
-  { name: 'Admin', icon: '🛠️', to: '/admin' }
+  { name: 'User Management', icon: '🛠️', to: '/usermanagement' }
 ];
 
 import React from 'react';
@@ -20,18 +19,38 @@ export default function SideMenu({ user }) {
       <div className="sidebar-header">Menu</div>
       <nav>
         <ul className="sidebar-list">
-          <li key="Dashboard">
-                <NavLink
-                  to="/dashboard"
-                  className={({ isActive }) =>
-                    isActive ? 'sidebar-item sidebar-active' : 'sidebar-item'
-                  }
-                  end
-                >
-                  <span className="sidebar-icon">📊</span>
-                  <span>Dashboard</span>
-                </NavLink>
-              </li>
+          {user.accountType === 'admin' ? 
+
+            <li key="AdminDashboard">
+              <NavLink
+                to="/admin"
+                className={({ isActive }) =>
+                  isActive ? 'sidebar-item sidebar-active' : 'sidebar-item'
+                }
+                end
+              >
+                <span className="sidebar-icon">📊</span>
+                <span>Admin Dashboard</span>
+              </NavLink>
+            </li>
+
+            :
+
+            <li key="Dashboard">
+              <NavLink
+                to="/dashboard"
+                className={({ isActive }) =>
+                  isActive ? 'sidebar-item sidebar-active' : 'sidebar-item'
+                }
+                end
+              >
+                <span className="sidebar-icon">📊</span>
+                <span>Dashboard</span>
+              </NavLink>
+            </li>
+        
+          }
+          
           {apps.length === 0 ? (
             <li className="sidebar-empty">No apps installed yet.</li>
           ) : (

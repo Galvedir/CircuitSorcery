@@ -25,7 +25,7 @@ export default function TopBar({ user, onSignOut }) {
     <header className="topbar">
       <div className="topbar-logo-group">
         <img src="/logo.png" alt="Logo" className="topbar-logo" />
-        <span className="topbar-title">CircuitSorcery</span>
+        <span className="topbar-title">Circuit Sorcery Support Apps</span>
       </div>
       <div className="topbar-actions">
         {user ? (

@@ -3,11 +3,11 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import RequireAdmin from './components/RequireAdmin';
 import TopBar from './components/TopBar';
 import SideMenu from './components/SideMenu';
-import { defaultApps, adminApps } from './components/SideMenu';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import AdminDashboard from './pages/AdminDashboard';
 import UserManagement from './pages/admin/UserManagement';
 
 // Reusable authentication wrapper
@@ -73,6 +73,14 @@ function App() {
               {/* Admin Routes */}
               <Route
                 path="/admin"
+                element={
+                  <RequireAdmin user={user}>
+                    <AdminDashboard />
+                  </RequireAdmin>
+                }
+              />
+              <Route
+                path="/usermanagement"
                 element={
                   <RequireAdmin user={user}>
                     <UserManagement />

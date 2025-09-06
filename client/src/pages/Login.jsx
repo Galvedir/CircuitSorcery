@@ -13,13 +13,11 @@ export default function Login({ setUser }) {
     try {
       const res = await fetch('http://localhost:5000/api/auth/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ email, password })
       });
       const data = await res.json();
       if (res.ok) {
-        localStorage.setItem('user', JSON.stringify(data.user));
-        localStorage.setItem('token', data.token);
         setUser(data.user);
         navigate('/');
       } else {
@@ -31,19 +29,34 @@ export default function Login({ setUser }) {
   };
 
   return (
-    <form onSubmit={handleLogin} style={{
-      maxWidth: 320, margin: '100px auto', background: 'white', padding: 24, borderRadius: 8, boxShadow: '0 2px 12px #0002'
-    }}>
-      <h2 style={{ marginBottom: 20 }}>Login</h2>
-      <label>Email</label>
-      <input type="email" value={email} onChange={e => setEmail(e.target.value)} required style={{ width: '100%', marginBottom: 10 }} />
-      <label>Password</label>
-      <input type="password" value={password} onChange={e => setPassword(e.target.value)} required style={{ width: '100%', marginBottom: 10 }} />
-      <button type="submit" style={{ width: '100%', padding: 8, background: '#282c34', color: 'white', border: 'none', borderRadius: 4 }}>Login</button>
-      {msg && <div style={{ color: 'red', marginTop: 10 }}>{msg}</div>}
-      <div style={{ marginTop: 16, fontSize: 14 }}>
-        Forgot password? (feature coming soon)<br />
-        No account? <span style={{ color: '#282c34', cursor: 'pointer' }} onClick={() => navigate('/register')}>Register</span>
+    <form className="card" onSubmit={handleLogin}>
+      <div className="form-title">Sign In</div>
+      <div className="form-group">
+        <label htmlFor="login-email">Email</label>
+        <input
+          id="login-email"
+          type="email"
+          autoComplete="username"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          required
+        />
+      </div>
+      <div className="form-group">
+        <label htmlFor="login-password">Password</label>
+        <input
+          id="login-password"
+          type="password"
+          autoComplete="current-password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          required
+        />
+      </div>
+      <button type="submit">Login</button>
+      {msg && <div className="form-message" style={{ color: 'red' }}>{msg}</div>}
+      <div className="form-footer">
+        No account? <a href="/register">Register</a>
       </div>
     </form>
   );

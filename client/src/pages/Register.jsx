@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export default function Register({ setUser }) {
+export default function Register() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -19,7 +19,7 @@ export default function Register({ setUser }) {
       });
       const data = await res.json();
       if (res.ok) {
-        setMsg('Registration successful! You can now log in.');
+        setMsg('Registration successful! Redirecting...');
         setTimeout(() => navigate('/login'), 1200);
       } else {
         setMsg(data.message);
@@ -30,20 +30,45 @@ export default function Register({ setUser }) {
   };
 
   return (
-    <form onSubmit={handleRegister} style={{
-      maxWidth: 320, margin: '100px auto', background: 'white', padding: 24, borderRadius: 8, boxShadow: '0 2px 12px #0002'
-    }}>
-      <h2 style={{ marginBottom: 20 }}>Register</h2>
-      <label>Name</label>
-      <input value={name} onChange={e => setName(e.target.value)} required style={{ width: '100%', marginBottom: 10 }} />
-      <label>Email</label>
-      <input type="email" value={email} onChange={e => setEmail(e.target.value)} required style={{ width: '100%', marginBottom: 10 }} />
-      <label>Password</label>
-      <input type="password" value={password} onChange={e => setPassword(e.target.value)} required style={{ width: '100%', marginBottom: 10 }} />
-      <button type="submit" style={{ width: '100%', padding: 8, background: '#282c34', color: 'white', border: 'none', borderRadius: 4 }}>Register</button>
-      {msg && <div style={{ color: msg.includes('successful') ? 'green' : 'red', marginTop: 10 }}>{msg}</div>}
-      <div style={{ marginTop: 16, fontSize: 14 }}>
-        Already have an account? <span style={{ color: '#282c34', cursor: 'pointer' }} onClick={() => navigate('/login')}>Login</span>
+    <form className="card" onSubmit={handleRegister}>
+      <div className="form-title">Register</div>
+      <div className="form-group">
+        <label htmlFor="register-name">Name</label>
+        <input
+          id="register-name"
+          type="text"
+          autoComplete="name"
+          value={name}
+          onChange={e => setName(e.target.value)}
+          required
+        />
+      </div>
+      <div className="form-group">
+        <label htmlFor="register-email">Email</label>
+        <input
+          id="register-email"
+          type="email"
+          autoComplete="username"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          required
+        />
+      </div>
+      <div className="form-group">
+        <label htmlFor="register-password">Password</label>
+        <input
+          id="register-password"
+          type="password"
+          autoComplete="new-password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          required
+        />
+      </div>
+      <button type="submit">Register</button>
+      {msg && <div className="form-message" style={{ color: msg.includes("successful") ? "green" : "red" }}>{msg}</div>}
+      <div className="form-footer">
+        Already have an account? <a href="/login">Login</a>
       </div>
     </form>
   );

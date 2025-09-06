@@ -1,23 +1,43 @@
-import React from 'react';
-import ProfileDropdown from './ProfileDropdown';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import './TopBar.css';
 
-export default function TopBar({ user, setUser }) {
+export default function TopBar({ user, onSignOut }) {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const initials = user?.name
+    ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+    : '?';
+
   return (
-    <header style={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      height: 60,
-      background: '#282c34',
-      color: 'white',
-      padding: '0 2rem'
-    }}>
-      <div style={{ fontWeight: 'bold', fontSize: 22, letterSpacing: 1 }}>
-        <img src="/logo.png" alt="logo" style={{ height: 40, verticalAlign: 'middle', marginRight: 10 }} />
-        Circuit Sorcery
+    <header className="topbar">
+      <div className="topbar-logo-group">
+        <img src="/logo.png" alt="Logo" className="topbar-logo" />
+        <span className="topbar-title">CircuitSorcery</span>
       </div>
-      <div>
-        {user ? <ProfileDropdown user={user} setUser={setUser} /> : null}
+      <div className="topbar-actions">
+        {user ? (
+          <div className="profile-menu" tabIndex={0}
+               onBlur={() => setDropdownOpen(false)}
+               style={{ position: 'relative', display: 'inline-block' }}>
+            <button
+              className="profile-button"
+              onClick={() => setDropdownOpen(x => !x)}
+              aria-haspopup="true"
+              aria-expanded={dropdownOpen}
+            >
+              {initials}
+            </button>
+            {dropdownOpen && (
+              <div className="profile-dropdown">
+                <Link to="/profile">Profile</Link>
+                <button onClick={onSignOut}>Sign Out</button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <Link to="/login" className="topbar-login">Login</Link>
+        )}
       </div>
     </header>
   );

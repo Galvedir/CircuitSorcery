@@ -13,10 +13,11 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import './SideMenu.css';
 
-export default function SideMenu({ apps = defaultApps }) {
+export default function SideMenu({ user }) {
+  const apps = user.accountType === 'admin' ? adminApps : defaultApps
   return (
     <aside className="sidebar">
-      <div className="sidebar-header">CircuitSorcery</div>
+      <div className="sidebar-header">Menu</div>
       <nav>
         <ul className="sidebar-list">
           <li key="Dashboard">

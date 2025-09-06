@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import RequireAdmin from './components/RequireAdmin';
 import TopBar from './components/TopBar';
 import SideMenu from './components/SideMenu';
+import { defaultApps, adminApps } from './components/SideMenu';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Register from './pages/Register';
@@ -17,6 +18,12 @@ function RequireAuth({ user, children }) {
 function App() {
   const [user, setUser] = React.useState(null);
 
+  const handleSignOut = () => {
+    localStorage.removeItem('user');
+    setUser(null);
+    window.location.href = '/login';
+  };
+
   React.useEffect(() => {
     const userData = localStorage.getItem('user');
     if (userData) setUser(JSON.parse(userData));
@@ -25,9 +32,11 @@ function App() {
   return (
     <Router>
       <div style={{ display: 'flex', height: '100vh', flexDirection: 'column' }}>
-        <TopBar user={user} setUser={setUser} />
+        <TopBar user={user} onSignOut={handleSignOut} />
         <div style={{ display: 'flex', flex: 1 }}>
-          <SideMenu />
+          <RequireAuth user={user}>
+            <SideMenu user={user} />
+          </RequireAuth>
           <main style={{ flex: 1, padding: '2rem', background: '#f7f7fa' }}>
             <Routes>
               <Route path="/login" element={<Login setUser={setUser} />} />

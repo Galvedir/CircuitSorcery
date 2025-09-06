@@ -1,12 +1,11 @@
+// Add the export keyword to defaultApps
+export const defaultApps = [
+  
+];
+
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import './SideMenu.css';
-
-const defaultApps = [
-  { name: 'Dashboard', icon: '📊', to: '/' },
-  { name: 'My Circuits', icon: '🧩', to: '/circuits' },
-  { name: 'Marketplace', icon: '🛒', to: '/marketplace' }
-];
 
 export default function SideMenu({ apps = defaultApps }) {
   return (
@@ -14,6 +13,18 @@ export default function SideMenu({ apps = defaultApps }) {
       <div className="sidebar-header">CircuitSorcery</div>
       <nav>
         <ul className="sidebar-list">
+          <li key="Dashboard">
+                <NavLink
+                  to="/dashboard"
+                  className={({ isActive }) =>
+                    isActive ? 'sidebar-item sidebar-active' : 'sidebar-item'
+                  }
+                  end
+                >
+                  <span className="sidebar-icon">📊</span>
+                  <span>Dashboard</span>
+                </NavLink>
+              </li>
           {apps.length === 0 ? (
             <li className="sidebar-empty">No apps installed yet.</li>
           ) : (

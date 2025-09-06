@@ -5,6 +5,12 @@ import SideMenu from './components/SideMenu';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+
+// Reusable authentication wrapper
+function RequireAuth({ user, children }) {
+  return user ? children : <Navigate to="/login" replace />;
+}
 
 function App() {
   const [user, setUser] = React.useState(null);
@@ -24,8 +30,34 @@ function App() {
             <Routes>
               <Route path="/login" element={<Login setUser={setUser} />} />
               <Route path="/register" element={<Register setUser={setUser} />} />
-              <Route path="/profile" element={user ? <Profile user={user} setUser={setUser} /> : <Navigate to="/login" />} />
-              <Route path="/" element={user ? <div>Welcome to Circuit Sorcery!</div> : <Navigate to="/login" />} />
+
+              {/* Protected routes */}
+              <Route
+                path="/dashboard"
+                element={
+                  <RequireAuth user={user}>
+                    <Dashboard user={user} />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <RequireAuth user={user}>
+                    <Profile user={user} setUser={setUser} />
+                  </RequireAuth>
+                }
+              />
+
+              {/* Home route */}
+              <Route
+                path="/"
+                element={
+                  <RequireAuth user={user}>
+                    <div>Welcome to Circuit Sorcery!</div>
+                  </RequireAuth>
+                }
+              />
             </Routes>
           </main>
         </div>

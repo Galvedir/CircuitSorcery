@@ -20,3 +20,7 @@ const sslOptions = {
 https.createServer(sslOptions, app).listen(443, () => {
   console.log('Proxy listening on port 443 (HTTPS) and forwarding to http://localhost:3000');
 });
+
+const wsUrl = window.location.protocol === 'https:' 
+  ? `wss://${window.location.host}/ws`
+  : `ws://${window.location.host}/ws`;

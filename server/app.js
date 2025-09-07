@@ -6,7 +6,11 @@ const groupRoutes = require('./routes/groups');
 
 const app = express();
 
-app.use(cors());
+// Update CORS to restrict to your domain for production
+app.use(cors({
+  origin: 'https://45.141.24.140', // Replace with your domain in production
+  credentials: true
+}));
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);

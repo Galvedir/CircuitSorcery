@@ -1,3 +1,5 @@
+const fs = require('fs');
+const https = require('https');
 const express = require('express');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
@@ -10,6 +12,11 @@ app.use('/', createProxyMiddleware({
   ws: true
 }));
 
-app.listen(80, () => {
-  console.log('Proxy listening on port 80 and forwarding to http://localhost:3000');
+const sslOptions = {
+  key: fs.readFileSync('server.key'),
+  cert: fs.readFileSync('server.cert')
+};
+
+https.createServer(sslOptions, app).listen(443, () => {
+  console.log('Proxy listening on port 443 (HTTPS) and forwarding to http://localhost:3000');
 });

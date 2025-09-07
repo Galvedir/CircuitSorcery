@@ -1,12 +1,13 @@
 {
   "name": "circuit-sorcery-proxy",
   "version": "1.0.0",
-  "description": "Reverse proxy for CircuitSorcery using Nginx",
+  "description": "Node.js reverse proxy for CircuitSorcery",
+  "main": "server.js",
   "scripts": {
-    "start": "nginx -c ./nginx.conf",
-    "stop": "nginx -s stop"
+    "start": "node server.js"
   },
-  "keywords": ["nginx", "proxy", "react", "node"],
-  "author": "",
-  "license": "MIT"
+  "dependencies": {
+    "express": "^4.18.2",
+    "http-proxy-middleware": "^2.0.6"
+  }
 }

@@ -1,29 +1,15 @@
-# CircuitSorcery Proxy
+# CircuitSorcery Proxy (Node.js)
 
-This project sets up an Nginx reverse proxy to forward traffic from port 80 to your React app on port 3000.
+This proxy forwards all traffic from port 80 to your React app on port 3000.
 
 ## Setup
 
-1. **Install Nginx**  
-   Download Nginx for Windows: https://nginx.org/download/  
-   Extract it to this folder or ensure `nginx.exe` is in your PATH.
-
-2. **Start the proxy**
-   ```
-   npm run start
-   ```
-
-3. **Stop the proxy**
-   ```
-   npm run stop
-   ```
-
-## Configuration
-
-- Edit `nginx.conf` to change proxy settings as needed.
-- By default, all traffic on port 80 is forwarded to `localhost:3000`.
+1. Open a terminal in this `proxy` folder.
+2. Run `npm install` to install dependencies.
+3. Run `npm start` (as administrator to bind to port 80).
 
 ## Notes
 
-- You must run this with administrator privileges to bind to port 80.
-- Make sure port 80 is open in your firewall.
+- Make sure your React app is running on port 3000.
+- You must run this proxy as administrator to use port 80 on Windows.
+- Visit `http://<your-host-ip>/` from other devices to access your app without showing the port in the address

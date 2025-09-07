@@ -1,0 +1,15 @@
+const express = require('express');
+const { createProxyMiddleware } = require('http-proxy-middleware');
+
+const app = express();
+
+// Proxy all requests to React app on port 3000
+app.use('/', createProxyMiddleware({
+  target: 'http://localhost:3000',
+  changeOrigin: true,
+  ws: true
+}));
+
+app.listen(80, () => {
+  console.log('Proxy listening on port 80 and forwarding to http://localhost:3000');
+});

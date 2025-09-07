@@ -6,6 +6,8 @@ export default function Groups({ user, refreshUser }) {
   const [pendingInvites, setPendingInvites] = useState([]);
   const [msg, setMsg] = useState('');
   const [loading, setLoading] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteMsg, setInviteMsg] = useState('');
 
   const userId = user && user.id ? user.id : null;
 
@@ -19,9 +21,8 @@ export default function Groups({ user, refreshUser }) {
         .then(res => res.json())
         .then(setPendingInvites);
     }
-  }, [userId, user && user.group_id]); // <-- reload groups when group_id changes
+  }, [userId, user && user.group_id]);
 
-  // Assign user to group after creation
   const handleCreate = async (e) => {
     e.preventDefault();
     setMsg('');
@@ -34,7 +35,6 @@ export default function Groups({ user, refreshUser }) {
     if (res.ok) {
       const newGroup = await res.json();
       setGroups([...groups, newGroup]);
-      // Assign user to the new group
       const joinRes = await fetch('http://localhost:5000/api/groups/join', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -64,9 +64,30 @@ export default function Groups({ user, refreshUser }) {
     if (res.ok) {
       setMsg('Joined new group!');
       refreshUser && refreshUser();
-      setPendingInvites(pendingInvites.filter(inv => inv.id !== inviteId));
+      setPendingInvites(pendingInvites.map(inv =>
+        inv.id === inviteId ? { ...inv, status: 'accepted' } : inv
+      ));
     } else {
       setMsg('Failed to join group.');
+    }
+    setLoading(false);
+  };
+
+  const handleDenyInvite = async (inviteId) => {
+    setMsg('');
+    setLoading(true);
+    const res = await fetch('http://localhost:5000/api/groups/deny-invite', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, inviteId })
+    });
+    if (res.ok) {
+      setMsg('Invite denied.');
+      setPendingInvites(pendingInvites.map(inv =>
+        inv.id === inviteId ? { ...inv, status: 'denied' } : inv
+      ));
+    } else {
+      setMsg('Failed to deny invite.');
     }
     setLoading(false);
   };
@@ -84,6 +105,30 @@ export default function Groups({ user, refreshUser }) {
       refreshUser && refreshUser();
     } else {
       setMsg('Failed to leave group.');
+    }
+    setLoading(false);
+  };
+
+  // Invite user to group by email
+  const handleInvite = async (e) => {
+    e.preventDefault();
+    setInviteMsg('');
+    setLoading(true);
+    const res = await fetch('http://localhost:5000/api/groups/invite', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ inviterId: userId, groupId: user.group_id, email: inviteEmail })
+    });
+    if (res.ok) {
+      setInviteMsg('Invite sent!');
+      setInviteEmail('');
+      // Optionally refresh invites
+      fetch(`http://localhost:5000/api/groups/invites?userId=${userId}`)
+        .then(res => res.json())
+        .then(setPendingInvites);
+    } else {
+      const data = await res.json();
+      setInviteMsg(data.message || 'Failed to send invite.');
     }
     setLoading(false);
   };
@@ -107,6 +152,21 @@ export default function Groups({ user, refreshUser }) {
             <strong>{userGroup.name}</strong>
             <button onClick={handleLeave} disabled={loading}>Leave Group</button>
           </div>
+          {/* Invite form */}
+          <form onSubmit={handleInvite} style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <input
+              type="email"
+              value={inviteEmail}
+              onChange={e => setInviteEmail(e.target.value)}
+              placeholder="Invite by email"
+              required
+              disabled={loading}
+              className="form-control"
+              style={{ width: 220 }}
+            />
+            <button type="submit" disabled={loading} className="btn">Invite</button>
+            {inviteMsg && <span style={{ marginLeft: 8, color: inviteMsg.includes('Fail') ? 'red' : 'green' }}>{inviteMsg}</span>}
+          </form>
         </div>
       ) : (
         <form onSubmit={handleCreate} style={{ marginBottom: '1rem' }}>
@@ -118,8 +178,9 @@ export default function Groups({ user, refreshUser }) {
             required
             disabled={loading}
             style={{ marginRight: '0.5rem' }}
+            className="form-control"
           />
-          <button type="submit" disabled={loading}>Create Group</button>
+          <button type="submit" disabled={loading} className="btn">Create Group</button>
         </form>
       )}
 
@@ -131,12 +192,31 @@ export default function Groups({ user, refreshUser }) {
           {pendingInvites.map(invite => (
             <li key={invite.id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
               <span>{invite.groupName}</span>
-              <button
-                onClick={() => handleAcceptInvite(invite.id, invite.groupId)}
-                disabled={loading}
-              >
-                Accept Invite
-              </button>
+              <span>Status: {invite.status || 'pending'}</span>
+              {invite.status === 'pending' && (
+                <>
+                  <button
+                    onClick={() => handleAcceptInvite(invite.id, invite.groupId)}
+                    disabled={loading}
+                    className="btn"
+                  >
+                    Accept
+                  </button>
+                  <button
+                    onClick={() => handleDenyInvite(invite.id)}
+                    disabled={loading}
+                    className="btn"
+                  >
+                    Deny
+                  </button>
+                </>
+              )}
+              {invite.status === 'accepted' && (
+                <span style={{ color: 'green' }}>Accepted</span>
+              )}
+              {invite.status === 'denied' && (
+                <span style={{ color: 'red' }}>Denied</span>
+              )}
             </li>
           ))}
         </ul>

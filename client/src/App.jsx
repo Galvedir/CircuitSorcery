@@ -119,10 +119,9 @@ function AppWrapper() {
             <Route
               path="/groups"
               element={
-                <Groups
-                  user={user}
-                  refreshUser={refreshUser}
-                />
+                <RequireAuth user={user}>
+                  <Groups user={user} refreshUser={refreshUser} />
+                </RequireAuth>
               }
             />
           </Routes>

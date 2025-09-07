@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import { defaultApps, adminApps } from '../components/SideMenu';
 
 export default function AdminDashboard({ user }) {
+  // Ensure user is available after refresh
+  if (!user) return <div>Loading...</div>;
+
   const apps = adminApps;
   return (
     <main style={{ padding: '32px', maxWidth: 700, margin: '0 auto' }}>
@@ -11,6 +14,9 @@ export default function AdminDashboard({ user }) {
       }}>
         Dashboard
       </div>
+      <div>Welcome, {user.name} ({user.email})</div>
+      <div>Account Type: {user.accountType}</div>
+      <div>Group ID: {user.group_id ? user.group_id : 'No group'}</div>
       <div className="card" style={{ minHeight: 180, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ fontSize: '1.25rem', marginBottom: '14px', fontWeight: 600 }}>
           Available Apps

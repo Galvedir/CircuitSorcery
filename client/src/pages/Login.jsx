@@ -19,6 +19,7 @@ export default function Login({ setUser }) {
       const data = await res.json();
       if (res.ok) {
         setUser(data.user);
+        localStorage.setItem('user', JSON.stringify(data.user));
         navigate('/');
       } else {
         setMsg(data.message);

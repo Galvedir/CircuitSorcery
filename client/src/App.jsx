@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import RequireAdmin from './components/RequireAdmin';
 import TopBar from './components/TopBar';
@@ -9,30 +9,53 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import UserManagement from './pages/admin/UserManagement';
+import Groups from './pages/Groups';
 
-// Reusable authentication wrapper
 function RequireAuth({ user, children }) {
   return user ? children : <Navigate to="/login" replace />;
 }
 
-// This is a wrapper so we can use useLocation outside of <Router>
 function AppWrapper() {
-  const [user, setUser] = React.useState(null);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
+  // Persist user on login
+  const handleLogin = (userData) => {
+    setUser(userData);
+    localStorage.setItem('user', JSON.stringify(userData));
+  };
+
+  // Persist user on logout
   const handleSignOut = () => {
     localStorage.removeItem('user');
     setUser(null);
     window.location.href = '/login';
   };
 
-  React.useEffect(() => {
+  // Load user from localStorage on app load
+  useEffect(() => {
     const userData = localStorage.getItem('user');
     if (userData) setUser(JSON.parse(userData));
+    setLoading(false);
   }, []);
 
+  // Function to refresh user data from backend/localStorage
+  const refreshUser = async () => {
+    if (!user || !user.id) return;
+    const res = await fetch(`http://localhost:5000/api/users/${user.id}`);
+    if (res.ok) {
+      const updatedUser = await res.json();
+      setUser(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+    }
+  };
+
   const location = useLocation();
-  // Hide SideMenu on login/register routes
   const hideSideMenu = ['/login', '/register'].includes(location.pathname);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div style={{ display: 'flex', height: '100vh', flexDirection: 'column' }}>
@@ -41,10 +64,9 @@ function AppWrapper() {
         {!hideSideMenu && user && <SideMenu user={user} />}
         <main style={{ flex: 1, padding: '2rem', background: '#f7f7fa' }}>
           <Routes>
-            <Route path="/login" element={<Login setUser={setUser} />} />
-            <Route path="/register" element={<Register setUser={setUser} />} />
+            <Route path="/login" element={<Login setUser={handleLogin} />} />
+            <Route path="/register" element={<Register setUser={handleLogin} />} />
 
-            {/* Protected routes */}
             <Route
               path="/dashboard"
               element={
@@ -61,8 +83,6 @@ function AppWrapper() {
                 </RequireAuth>
               }
             />
-
-            {/* Home route */}
             <Route
               path="/"
               element={
@@ -71,13 +91,11 @@ function AppWrapper() {
                 </RequireAuth>
               }
             />
-
-            {/* Admin Routes */}
             <Route
               path="/admin"
               element={
                 <RequireAdmin user={user}>
-                  <AdminDashboard />
+                  <AdminDashboard user={user} />
                 </RequireAdmin>
               }
             />
@@ -87,6 +105,15 @@ function AppWrapper() {
                 <RequireAdmin user={user}>
                   <UserManagement />
                 </RequireAdmin>
+              }
+            />
+            <Route
+              path="/groups"
+              element={
+                <Groups
+                  user={user}
+                  refreshUser={refreshUser}
+                />
               }
             />
           </Routes>

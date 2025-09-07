@@ -78,7 +78,7 @@ button {
   font-weight: 600;
   box-shadow: var(--shadow);
   font-size: 1rem;
-  padding: 12px 0;
+  padding: 0.4em 1.2em;
   margin-top: 12px;
   transition: background 0.2s, box-shadow 0.2s;
 }

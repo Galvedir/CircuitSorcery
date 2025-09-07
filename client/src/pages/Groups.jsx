@@ -103,13 +103,13 @@ export default function Groups({ user, refreshUser }) {
       {userGroup ? (
         <div>
           <h3>Your Group</h3>
-          <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
             <strong>{userGroup.name}</strong>
             <button onClick={handleLeave} disabled={loading}>Leave Group</button>
           </div>
         </div>
       ) : (
-        <form onSubmit={handleCreate}>
+        <form onSubmit={handleCreate} style={{ marginBottom: '1rem' }}>
           <input
             type="text"
             value={groupName}
@@ -117,19 +117,20 @@ export default function Groups({ user, refreshUser }) {
             placeholder="New group name"
             required
             disabled={loading}
+            style={{ marginRight: '0.5rem' }}
           />
           <button type="submit" disabled={loading}>Create Group</button>
         </form>
       )}
 
-      <h3>Pending Group Invitations</h3>
+      <h3 style={{ marginTop: '2rem' }}>Pending Group Invitations</h3>
       {pendingInvites.length === 0 ? (
-        <div>No pending invites.</div>
+        <div style={{ marginBottom: '1rem' }}>No pending invites.</div>
       ) : (
-        <ul>
+        <ul style={{ marginBottom: '1rem' }}>
           {pendingInvites.map(invite => (
-            <li key={invite.id}>
-              {invite.groupName}
+            <li key={invite.id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
+              <span>{invite.groupName}</span>
               <button
                 onClick={() => handleAcceptInvite(invite.id, invite.groupId)}
                 disabled={loading}
@@ -140,7 +141,7 @@ export default function Groups({ user, refreshUser }) {
           ))}
         </ul>
       )}
-      {msg && <div>{msg}</div>}
+      {msg && <div style={{ marginTop: '1rem' }}>{msg}</div>}
     </div>
   );
 }

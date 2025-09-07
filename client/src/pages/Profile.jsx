@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function Profile({ user, setUser }) {
   const [name, setName] = useState(user.name);
@@ -6,6 +6,17 @@ export default function Profile({ user, setUser }) {
   const [msg, setMsg] = useState('');
   const [resetPw, setResetPw] = useState(false);
   const [newPw, setNewPw] = useState('');
+  const [confirmPw, setConfirmPw] = useState('');
+  const [group, setGroup] = useState(null);
+
+  useEffect(() => {
+    // Fetch group info if user is in a group
+    if (user.group_id) {
+      fetch(`http://localhost:5000/api/groups/me/${user.id}`)
+        .then(res => res.json())
+        .then(data => setGroup(data));
+    }
+  }, [user.group_id, user.id]);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -33,6 +44,10 @@ export default function Profile({ user, setUser }) {
   const handleResetPw = async (e) => {
     e.preventDefault();
     setMsg('');
+    if (newPw !== confirmPw) {
+      setMsg('Passwords do not match.');
+      return;
+    }
     try {
       const res = await fetch('http://localhost:5000/api/auth/reset-password', {
         method: 'POST',
@@ -44,6 +59,7 @@ export default function Profile({ user, setUser }) {
         setMsg('Password reset!');
         setResetPw(false);
         setNewPw('');
+        setConfirmPw('');
       } else {
         setMsg(data.message || 'Error resetting password');
       }
@@ -53,27 +69,95 @@ export default function Profile({ user, setUser }) {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: '40px auto', background: 'white', padding: 32, borderRadius: 10, boxShadow: '0 2px 12px #0002' }}>
-      <h2>Profile</h2>
+    <div className="card" style={{ maxWidth: 400, margin: '40px auto', padding: 32 }}>
+      <h2 style={{ marginBottom: 24 }}>Profile</h2>
       <form onSubmit={handleUpdate}>
-        <label>Name</label>
-        <input value={name} onChange={e => setName(e.target.value)} style={{ width: '100%', marginBottom: 12 }} />
-        <label>Email</label>
-        <input value={email} disabled style={{ width: '100%', marginBottom: 12, background: '#eee' }} />
-        <button type="submit" style={{ width: '100%', padding: 8, background: '#282c34', color: 'white', border: 'none', borderRadius: 4 }}>Update Profile</button>
+        <div className="form-group">
+          <label htmlFor="profile-name">Name</label>
+          <input
+            id="profile-name"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            className="form-control"
+            style={{ width: '100%' }}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="profile-email">Email</label>
+          <input
+            id="profile-email"
+            value={email}
+            disabled
+            className="form-control"
+            style={{ width: '100%' }}
+          />
+        </div>
+        <div className="form-group">
+          <label>Group</label>
+          <input
+            value={group ? group.name : 'No group'}
+            disabled
+            className="form-control"
+            style={{ width: '100%' }}
+          />
+        </div>
+        <button
+          type="submit"
+          className="btn"
+          style={{ width: '100%', marginBottom: 12 }}
+        >
+          Update Profile
+        </button>
       </form>
       <div style={{ marginTop: 24 }}>
-        <button onClick={() => setResetPw(v => !v)} style={{ background: '#484d5e', color: 'white', border: 'none', padding: 8, borderRadius: 4 }}>
+        <button
+          onClick={() => setResetPw(v => !v)}
+          className="btn"
+          style={{ width: '100%', marginBottom: resetPw ? 12 : 0 }}
+        >
           {resetPw ? 'Cancel' : 'Reset Password'}
         </button>
         {resetPw && (
           <form onSubmit={handleResetPw} style={{ marginTop: 12 }}>
-            <input type="password" value={newPw} onChange={e => setNewPw(e.target.value)} placeholder="New Password" style={{ width: '100%', marginBottom: 10 }} />
-            <button type="submit" style={{ width: '100%', padding: 8, background: '#282c34', color: 'white', border: 'none', borderRadius: 4 }}>Save New Password</button>
+            <input
+              type="password"
+              value={newPw}
+              onChange={e => setNewPw(e.target.value)}
+              placeholder="New Password"
+              className="form-control"
+              style={{ width: '100%', marginBottom: 10 }}
+              required
+            />
+            <input
+              type="password"
+              value={confirmPw}
+              onChange={e => setConfirmPw(e.target.value)}
+              placeholder="Confirm New Password"
+              className="form-control"
+              style={{ width: '100%', marginBottom: 10 }}
+              required
+            />
+            <button
+              type="submit"
+              className="btn"
+              style={{ width: '100%' }}
+            >
+              Save New Password
+            </button>
           </form>
         )}
       </div>
-      {msg && <div style={{ color: msg.includes('Error') ? 'red' : 'green', marginTop: 16 }}>{msg}</div>}
+      {msg && (
+        <div
+          style={{
+            color: msg.includes('Error') || msg.includes('match') ? 'red' : 'green',
+            marginTop: 16,
+            textAlign: 'center'
+          }}
+        >
+          {msg}
+        </div>
+      )}
     </div>
   );
 }

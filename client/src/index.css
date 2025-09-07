@@ -109,3 +109,7 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+a, .sidebar-item, .sidebar-active {
+  text-decoration: none !important;
+}

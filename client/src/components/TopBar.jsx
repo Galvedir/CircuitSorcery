@@ -43,7 +43,7 @@ export default function TopBar({ user, onSignOut }) {
             {dropdownOpen && (
               <div className="profile-dropdown" ref={dropdownRef}>
                 <Link to="/profile" onClick={() => setDropdownOpen(false)}>Profile</Link>
-                <button onClick={() => { setDropdownOpen(false); onSignOut(); }}>Sign Out</button>
+                <Link to="#" onClick={e => {e.preventDefault();setDropdownOpen(false);onSignOut();}}>Sign Out</Link>
               </div>
             )}
           </div>

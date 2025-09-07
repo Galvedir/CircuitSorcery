@@ -9,8 +9,8 @@ const app = express();
 // Update CORS to restrict to your domain for production
 app.use(cors({
   origin: [
-    'http://45.141.24.140:3000',
-    'https://45.141.24.140'
+    'http://circuitsorcerysupport.com:3000',
+    'https://circuitsorcerysupport.com'
   ],
   credentials: true
 }));

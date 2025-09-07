@@ -4,6 +4,8 @@ export default function GroupManagement() {
   const [groups, setGroups] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({ name: '' });
+  const [newGroupName, setNewGroupName] = useState('');
+  const [msg, setMsg] = useState('');
 
   useEffect(() => {
     fetch('http://localhost:5000/api/groups')
@@ -33,9 +35,40 @@ export default function GroupManagement() {
     }
   };
 
+  const handleCreateGroup = async (e) => {
+    e.preventDefault();
+    setMsg('');
+    const res = await fetch('http://localhost:5000/api/groups', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: newGroupName })
+    });
+    if (res.ok) {
+      const newGroup = await res.json();
+      setGroups([...groups, newGroup]);
+      setMsg('Group created!');
+      setNewGroupName('');
+    } else {
+      setMsg('Failed to create group.');
+    }
+  };
+
   return (
     <div>
       <h2>Group Management</h2>
+      <form onSubmit={handleCreateGroup} style={{ marginBottom: 24 }}>
+        <input
+          type="text"
+          value={newGroupName}
+          onChange={e => setNewGroupName(e.target.value)}
+          placeholder="New group name"
+          required
+          className="form-control"
+          style={{ marginRight: 8, width: 220 }}
+        />
+        <button type="submit" className="btn">Create Group</button>
+        {msg && <span style={{ marginLeft: 16, color: msg.includes('Fail') ? 'red' : 'green' }}>{msg}</span>}
+      </form>
       <table className="styled-table">
         <thead>
           <tr>

@@ -10,7 +10,7 @@ const app = express();
 // Update CORS to restrict to your domain for production
 app.use(cors({
   origin: [
-    'http://circuitsorcerysupport.com:3000',
+    'http://circuitsorcerysupport.com',
     'https://circuitsorcerysupport.com'
   ],
   credentials: true

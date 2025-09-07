@@ -6,12 +6,14 @@ export default function Login({ setUser }) {
   const [password, setPassword] = useState('');
   const [msg, setMsg] = useState('');
   const navigate = useNavigate();
+  const API_BASE = process.env.REACT_APP_API_BASE_URL;
+  console.log('API_BASE:', API_BASE);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setMsg('');
     try {
-      const res = await fetch('http://45.141.24.140:5000/api/auth/login', {
+      const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ email, password })

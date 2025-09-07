@@ -11,7 +11,7 @@ export default function Login({ setUser }) {
     e.preventDefault();
     setMsg('');
     try {
-      const res = await fetch('http://localhost:5000/api/auth/login', {
+      const res = await fetch('http://45.141.24.140:5000/api/auth/login', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ email, password })

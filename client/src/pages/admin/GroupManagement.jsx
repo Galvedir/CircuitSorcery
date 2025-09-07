@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 export default function GroupManagement() {
+  const API_BASE = process.env.REACT_APP_API_BASE_URL;
   const [groups, setGroups] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({ name: '' });
@@ -8,7 +9,7 @@ export default function GroupManagement() {
   const [msg, setMsg] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/groups')
+    fetch(`${API_BASE}/api/groups`)
       .then(res => res.json())
       .then(setGroups);
   }, []);
@@ -24,7 +25,7 @@ export default function GroupManagement() {
   };
 
   const saveEdit = async (id) => {
-    const res = await fetch(`http://localhost:5000/api/groups/${id}`, {
+    const res = await fetch(`${API_BASE}/api/groups/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(editData)
@@ -38,7 +39,7 @@ export default function GroupManagement() {
   const handleCreateGroup = async (e) => {
     e.preventDefault();
     setMsg('');
-    const res = await fetch('http://localhost:5000/api/groups', {
+    const res = await fetch(`${API_BASE}/api/groups`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: newGroupName })

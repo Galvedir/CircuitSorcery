@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
 
 export default function UserManagement() {
+  const API_BASE = process.env.REACT_APP_API_BASE_URL;
   const [users, setUsers] = useState([]);
   const [groups, setGroups] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({ username: '', email: '', accountType: '', group_id: null });
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/users')
+    fetch(`${API_BASE}/api/users`)
       .then(res => res.json())
       .then(setUsers);
 
-    fetch('http://localhost:5000/api/groups')
+    fetch(`${API_BASE}/api/groups`)
       .then(res => res.json())
       .then(setGroups);
   }, []);
@@ -32,7 +33,7 @@ export default function UserManagement() {
   };
 
   const saveEdit = async (id) => {
-    const res = await fetch(`http://localhost:5000/api/users/${id}`, {
+    const res = await fetch(`${API_BASE}/api/users/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(editData)

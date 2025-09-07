@@ -11,13 +11,15 @@ export default function Groups({ user, refreshUser }) {
 
   const userId = user && user.id ? user.id : null;
 
+  const API_BASE = process.env.REACT_APP_API_BASE_URL;
+
   useEffect(() => {
-    fetch('http://localhost:5000/api/groups')
+    fetch(`${API_BASE}/api/groups`)
       .then(res => res.json())
       .then(setGroups);
 
     if (userId) {
-      fetch(`http://localhost:5000/api/groups/invites?userId=${userId}`)
+      fetch(`${API_BASE}/api/groups/invites?userId=${userId}`)
         .then(res => res.json())
         .then(setPendingInvites);
     }
@@ -27,7 +29,7 @@ export default function Groups({ user, refreshUser }) {
     e.preventDefault();
     setMsg('');
     setLoading(true);
-    const res = await fetch('http://localhost:5000/api/groups', {
+    const res = await fetch(`${API_BASE}/api/groups`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: groupName })
@@ -35,7 +37,7 @@ export default function Groups({ user, refreshUser }) {
     if (res.ok) {
       const newGroup = await res.json();
       setGroups([...groups, newGroup]);
-      const joinRes = await fetch('http://localhost:5000/api/groups/join', {
+      const joinRes = await fetch(`${API_BASE}/api/groups/join`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, groupId: newGroup.id })
@@ -56,7 +58,7 @@ export default function Groups({ user, refreshUser }) {
   const handleAcceptInvite = async (inviteId, groupId) => {
     setMsg('');
     setLoading(true);
-    const res = await fetch('http://localhost:5000/api/groups/accept-invite', {
+    const res = await fetch(`${API_BASE}/api/groups/accept-invite`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId, inviteId, groupId })
@@ -76,7 +78,7 @@ export default function Groups({ user, refreshUser }) {
   const handleDenyInvite = async (inviteId) => {
     setMsg('');
     setLoading(true);
-    const res = await fetch('http://localhost:5000/api/groups/deny-invite', {
+    const res = await fetch(`${API_BASE}/api/groups/deny-invite`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId, inviteId })
@@ -95,7 +97,7 @@ export default function Groups({ user, refreshUser }) {
   const handleLeave = async () => {
     setMsg('');
     setLoading(true);
-    const res = await fetch('http://localhost:5000/api/groups/leave', {
+    const res = await fetch(`${API_BASE}/api/groups/leave`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId })
@@ -109,12 +111,11 @@ export default function Groups({ user, refreshUser }) {
     setLoading(false);
   };
 
-  // Invite user to group by email
   const handleInvite = async (e) => {
     e.preventDefault();
     setInviteMsg('');
     setLoading(true);
-    const res = await fetch('http://localhost:5000/api/groups/invite', {
+    const res = await fetch(`${API_BASE}/api/groups/invite`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ inviterId: userId, groupId: user.group_id, email: inviteEmail })
@@ -122,8 +123,7 @@ export default function Groups({ user, refreshUser }) {
     if (res.ok) {
       setInviteMsg('Invite sent!');
       setInviteEmail('');
-      // Optionally refresh invites
-      fetch(`http://localhost:5000/api/groups/invites?userId=${userId}`)
+      fetch(`${API_BASE}/api/groups/invites?userId=${userId}`)
         .then(res => res.json())
         .then(setPendingInvites);
     } else {

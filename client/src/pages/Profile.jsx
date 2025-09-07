@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 export default function Profile({ user, setUser }) {
+  const API_BASE = process.env.REACT_APP_API_BASE_URL;
   const [name, setName] = useState(user.name);
   const [email] = useState(user.email);
   const [msg, setMsg] = useState('');
@@ -23,7 +24,7 @@ export default function Profile({ user, setUser }) {
     setMsg('');
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:5000/api/users/profile', {
+      const res = await fetch(`${API_BASE}/api/users/profile`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ name })

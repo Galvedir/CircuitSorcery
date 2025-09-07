@@ -12,15 +12,6 @@ app.use('/', createProxyMiddleware({
   ws: true
 }));
 
-const sslOptions = {
-  key: fs.readFileSync('server.key'),
-  cert: fs.readFileSync('server.cert')
-};
-
-https.createServer(sslOptions, app).listen(443, () => {
-  console.log('Proxy listening on port 443 (HTTPS) and forwarding to http://localhost:3000');
+app.listen(80, () => {
+  console.log('Proxy listening on port 80 and forwarding to http://localhost:3000');
 });
-
-const wsUrl = window.location.protocol === 'https:' 
-  ? `wss://${window.location.host}/ws`
-  : `ws://${window.location.host}/ws`;

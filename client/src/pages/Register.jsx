@@ -5,12 +5,17 @@ export default function Register() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [msg, setMsg] = useState('');
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setMsg('');
+    if (password !== confirmPassword) {
+      setMsg('Passwords do not match.');
+      return;
+    }
     try {
       const res = await fetch('http://localhost:5000/api/auth/register', {
         method: 'POST',
@@ -62,6 +67,17 @@ export default function Register() {
           autoComplete="new-password"
           value={password}
           onChange={e => setPassword(e.target.value)}
+          required
+        />
+      </div>
+      <div className="form-group">
+        <label htmlFor="register-confirm-password">Confirm Password</label>
+        <input
+          id="register-confirm-password"
+          type="password"
+          autoComplete="new-password"
+          value={confirmPassword}
+          onChange={e => setConfirmPassword(e.target.value)}
           required
         />
       </div>

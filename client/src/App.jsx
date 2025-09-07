@@ -9,6 +9,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import UserManagement from './pages/admin/UserManagement';
+import GroupManagement from './pages/admin/GroupManagement';
 import Groups from './pages/Groups';
 
 function RequireAuth({ user, children }) {
@@ -104,6 +105,14 @@ function AppWrapper() {
               element={
                 <RequireAdmin user={user}>
                   <UserManagement />
+                </RequireAdmin>
+              }
+            />
+            <Route
+              path="/groupmanagement"
+              element={
+                <RequireAdmin user={user}>
+                  <GroupManagement />
                 </RequireAdmin>
               }
             />

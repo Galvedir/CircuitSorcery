@@ -5,7 +5,8 @@ export const defaultApps = [
 
 export const adminApps = [
   ...defaultApps,
-  { name: 'User Management', icon: '🛠️', to: '/usermanagement' }
+  { name: 'User Management', icon: '🛠️', to: '/usermanagement' },
+  { name: 'Group Management', icon: '👥', to: '/groupmanagement' }
 ];
 
 import React from 'react';
